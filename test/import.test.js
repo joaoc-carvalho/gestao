@@ -1,0 +1,4 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {parseImport,validate} from '../import.js';
+test('CSV brasileiro e campo com separador',()=>{assert.deepEqual(parseImport('data;descricao;valor\n20/10/2026;"Mercado; compras";"-1.234,56"','csv'),[{date:'2026-10-20',description:'Mercado; compras',amount:1234.56,type:'despesa'}]);});
+test('OFX SGML sem fechar tags',()=>{assert.deepEqual(parseImport('<STMTTRN><DTPOSTED>20261020120000<TRNAMT>-25.50<MEMO>Almoço</STMTTRN>','ofx'),[{date:'2026-10-20',description:'Almoço',amount:25.5,type:'despesa'}]);});
+test('recusa cabeçalho desconhecido e data impossível',()=>{assert.throws(()=>parseImport('foo,bar\n1,2','csv'));assert.throws(()=>validate({date:'2026-02-30',type:'receita',amount:1,description:'Teste',owner:'Eu',bank:'Itaú'}));});
